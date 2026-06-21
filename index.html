@@ -12,9 +12,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sonorita — AI music generation, local-first. No cloud, no subscription." />
-  <meta property="og:title" content="Sonorita — Coming Soon" />
-  <meta property="og:description" content="Your music. On your machine." />
-  <title>Sonorita — Coming Soon</title>
+  <meta property="og:title" content="Sonorita — AI music, local-first" />
+  <meta property="og:description" content="Your music. On your machine. Free download for Linux and Windows." />
+  <title>Sonorita — Download</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -158,6 +158,61 @@
       padding: 0; margin: -1px; overflow: hidden;
       clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
+
+    /* Download buttons */
+    .download-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .download-label {
+      font-size: 0.8rem;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.25rem;
+    }
+    .dl-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.2rem;
+      background: rgba(251,247,241,0.07);
+      border: 1px solid rgba(251,247,241,0.12);
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: background 0.18s, border-color 0.18s;
+    }
+    .dl-btn:hover {
+      background: rgba(224,152,46,0.15);
+      border-color: var(--accent);
+    }
+    .dl-os {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-weight: 500;
+    }
+    .dl-ext {
+      font-size: 0.8rem;
+      opacity: 0.55;
+    }
+    .dl-btn-disabled {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.2rem;
+      background: rgba(251,247,241,0.03);
+      border: 1px solid rgba(251,247,241,0.06);
+      border-radius: 10px;
+      color: var(--text);
+      opacity: 0.4;
+      font-size: 0.95rem;
+      cursor: default;
+    }
   </style>
 </head>
 
@@ -197,13 +252,50 @@
 
     <p class="tagline">Your music.&nbsp;&nbsp;On your machine.</p>
 
+    <!-- DOWNLOAD BUTTONS -->
+    <div class="download-section" aria-label="Download Sonorita">
+      <p class="download-label">Free download — v0.1.0 alpha</p>
+
+      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_0.1.0_x64-setup.exe">
+        <span class="dl-os">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.8"/></svg>
+          Windows
+        </span>
+        <span class="dl-ext">.exe installer</span>
+      </a>
+
+      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_0.1.0_amd64.deb">
+        <span class="dl-os">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          Linux — Debian / Ubuntu
+        </span>
+        <span class="dl-ext">.deb package</span>
+      </a>
+
+      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita-0.1.0-1.x86_64.rpm">
+        <span class="dl-os">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          Linux — Fedora / RHEL
+        </span>
+        <span class="dl-ext">.rpm package</span>
+      </a>
+
+      <div class="dl-btn-disabled" aria-label="AppImage coming soon">
+        <span class="dl-os">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+          Linux — AppImage
+        </span>
+        <span class="dl-ext">coming soon</span>
+      </div>
+    </div>
+
     <!-- FORMULAIRE — brancher Listmonk/Mailchimp dans le JS ci-dessous -->
     <form class="notify-form" id="notifyForm" action="#" method="POST" novalidate
           aria-label="Receive a notification when Sonorita launches">
       <label for="emailInput" class="sr-only">Email address</label>
       <input id="emailInput" type="email" name="email" placeholder="Your email"
              autocomplete="email" inputmode="email" spellcheck="false" required />
-      <button type="submit" id="notifyBtn">Notify me</button>
+      <button type="submit" id="notifyBtn">Keep me updated</button>
     </form>
 
     <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
