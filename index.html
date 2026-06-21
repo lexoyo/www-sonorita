@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  SONORITA — Coming Soon                                      ║
+  ║  Stack   : HTML5 · CSS3 · Vanilla JS (zéro dépendance)      ║
+  ║  Font    : Fraunces (Google Fonts) — logo & tagline          ║
+  ║  Palette : #2A2230 bg · #FBF7F1 text · #E0982E accent safran ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sonorita — AI music generation, local-first. No cloud, no subscription." />
+  <meta property="og:title" content="Sonorita — Coming Soon" />
+  <meta property="og:description" content="Your music. On your machine." />
+  <title>Sonorita — Coming Soon</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #2A2230;
+      --text:        #FBF7F1;
+      --accent:      #E0982E;
+      --accent-hover:#e8a840;
+      --font-serif:  'Fraunces', Georgia, serif;
+      --font-sans:   -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: 2.5rem 1.5rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+    }
+
+    .stage {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.6rem;
+      text-align: center;
+    }
+
+    .logo-svg {
+      width: 100%;
+      max-width: 420px;
+      overflow: visible;
+    }
+
+    @keyframes arc-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.6; transform: scale(1.08); }
+    }
+
+    .arc-group {
+      transform-origin: 100px 54px;
+      animation: arc-pulse 3.4s ease-in-out infinite;
+    }
+
+    .tagline {
+      font-family: var(--font-serif);
+      font-size: clamp(1rem, 3.8vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      font-variation-settings: 'opsz' 20, 'SOFT' 80, 'WONK' 0;
+      color: var(--text);
+      opacity: 0.78;
+      letter-spacing: 0.015em;
+      line-height: 1.55;
+    }
+
+    .notify-form {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(251,247,241,0.10), 0 6px 32px rgba(0,0,0,0.40);
+      transition: box-shadow 0.25s ease;
+    }
+
+    .notify-form:focus-within {
+      box-shadow: 0 0 0 1.5px var(--accent), 0 6px 32px rgba(0,0,0,0.40);
+    }
+
+    .notify-form input[type="email"] {
+      flex: 1;
+      min-width: 0;
+      background: rgba(251,247,241,0.06);
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.93rem;
+      padding: 0.9rem 1.1rem;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .notify-form input[type="email"]::placeholder { color: rgba(251,247,241,0.32); }
+
+    .notify-form button {
+      flex-shrink: 0;
+      background: var(--accent);
+      border: none;
+      color: #1a1120;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.9rem 1.35rem;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .notify-form button:hover   { background: var(--accent-hover); }
+    .notify-form button:active  { transform: scale(0.97); }
+    .notify-form button:disabled { opacity: 0.6; cursor: default; }
+
+    .form-msg {
+      font-size: 0.8rem;
+      color: rgba(251,247,241,0.45);
+      min-height: 1.1em;
+      letter-spacing: 0.01em;
+      transition: color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .form-msg.ok    { color: #7ecba1; }
+    .form-msg.error { color: #e07a5f; }
+
+    @media (max-width: 380px) {
+      .notify-form { flex-direction: column; }
+      .notify-form button { text-align: center; padding: 0.85rem 1rem; }
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="stage" role="main">
+
+    <!-- LOGO SVG -->
+    <svg class="logo-svg" role="img" aria-label="Sonorita"
+         viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <defs>
+        <filter id="arc-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      <text x="12" y="76"
+        font-family="'Fraunces', Georgia, serif"
+        font-size="74" font-weight="400"
+        font-variation-settings="'opsz' 72, 'SOFT' 80, 'WONK' 0"
+        fill="#FBF7F1" letter-spacing="-0.5">sonorita</text>
+
+      <!-- Arcs sonores sur le 1er "o" -->
+      <g class="arc-group" filter="url(#arc-glow)" aria-hidden="true">
+        <path d="M 100 40  A 10 10 0 0 1 110 50  A 10 10 0 0 1 100 60"
+              fill="none" stroke="#E0982E" stroke-width="2.4" stroke-linecap="round" opacity="1" />
+        <path d="M 100 32  A 18 18 0 0 1 118 50  A 18 18 0 0 1 100 68"
+              fill="none" stroke="#E0982E" stroke-width="2" stroke-linecap="round" opacity="0.6" />
+        <path d="M 100 23  A 27 27 0 0 1 127 50  A 27 27 0 0 1 100 77"
+              fill="none" stroke="#E0982E" stroke-width="1.5" stroke-linecap="round" opacity="0.28" />
+      </g>
+
+      <!-- Point du "i" en safran -->
+      <rect x="218" y="4" width="22" height="22" fill="#2A2230" />
+      <circle cx="229" cy="14" r="5.5" fill="#E0982E" />
+    </svg>
+
+    <p class="tagline">Your music.&nbsp;&nbsp;On your machine.</p>
+
+    <!-- FORMULAIRE — brancher Listmonk/Mailchimp dans le JS ci-dessous -->
+    <form class="notify-form" id="notifyForm" action="#" method="POST" novalidate
+          aria-label="Receive a notification when Sonorita launches">
+      <label for="emailInput" class="sr-only">Email address</label>
+      <input id="emailInput" type="email" name="email" placeholder="Your email"
+             autocomplete="email" inputmode="email" spellcheck="false" required />
+      <button type="submit" id="notifyBtn">Notify me</button>
+    </form>
+
+    <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+      const form  = document.getElementById('notifyForm');
+      const input = document.getElementById('emailInput');
+      const btn   = document.getElementById('notifyBtn');
+      const msg   = document.getElementById('formMsg');
+
+      function isValidEmail(val) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val.trim()); }
+      function showMsg(text, type) { msg.textContent = text; msg.className = 'form-msg' + (type ? ' ' + type : ''); }
+      function setLoading(on) { btn.disabled = on; btn.textContent = on ? '…' : 'Notify me'; }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = input.value.trim();
+        if (!email || !isValidEmail(email)) { showMsg('Please enter a valid email address.', 'error'); input.focus(); return; }
+        setLoading(true); showMsg('', '');
+
+        // TODO : remplacer par un vrai fetch() vers Listmonk ou Mailchimp
+        // fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email}) })
+        //   .then(r => r.ok ? onSuccess() : onError()).catch(onError);
+        setTimeout(onSuccess, 850);
+
+        function onSuccess() { setLoading(false); input.value = ''; showMsg("You're on the list. We'll reach out soon.", 'ok'); }
+        function onError()   { setLoading(false); showMsg('Something went wrong — please try again.', 'error'); }
+      });
+
+      input.addEventListener('input', function () { if (msg.classList.contains('error')) showMsg('', ''); });
+    }());
+  </script>
+</body>
+</html>
