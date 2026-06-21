@@ -228,10 +228,11 @@
         if (!email || !isValidEmail(email)) { showMsg('Please enter a valid email address.', 'error'); input.focus(); return; }
         setLoading(true); showMsg('', '');
 
-        // TODO : remplacer par un vrai fetch() vers Listmonk ou Mailchimp
-        // fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email}) })
-        //   .then(r => r.ok ? onSuccess() : onError()).catch(onError);
-        setTimeout(onSuccess, 850);
+        fetch('https://nocodb.silex.me/api/v2/public/shared-view/a35c37e4-613a-4c36-adf4-a70c7e16c5c0/rows', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: { Email: email } })
+        }).then(function(r) { r.ok ? onSuccess() : onError(); }).catch(onError);
 
         function onSuccess() { setLoading(false); input.value = ''; showMsg("You're on the list. We'll reach out soon.", 'ok'); }
         function onError()   { setLoading(false); showMsg('Something went wrong — please try again.', 'error'); }
