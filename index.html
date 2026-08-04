@@ -1,291 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-  ╔══════════════════════════════════════════════════════════════╗
-  ║  SONORITA — Coming Soon                                      ║
-  ║  Stack   : HTML5 · CSS3 · Vanilla JS (zéro dépendance)      ║
-  ║  Font    : Fraunces (Google Fonts) — logo & tagline          ║
-  ║  Palette : #2A2230 bg · #FBF7F1 text · #E0982E accent safran ║
-  ╚══════════════════════════════════════════════════════════════╝
+  SONORITA — landing
+  Le player est un Winamp : la page doit en avoir l'ADN (LCD vert, chassis metal,
+  playlist). Palette relevee sur le skin reel : chassis #232842->#3A4165,
+  liseres #9BA5C8, LCD #000 + vert #23D818, titre or #E8C547, safran #E0982E.
+  Stack : HTML + CSS + vanilla JS. Zero dependance hors Google Fonts (logo).
 -->
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sonorita — desktop app for AI music generation, local-first. No cloud, no subscription." />
-  <meta property="og:title" content="Sonorita — AI music, local-first" />
+  <meta name="description" content="Sonorita — an infinite AI radio that generates music on your own machine. No cloud, no account, no subscription." />
+  <meta property="og:title" content="Sonorita — infinite radio, generated on your machine" />
   <meta property="og:description" content="Your music. On your machine. A free desktop app for Windows and Linux PCs with an NVIDIA GPU." />
+  <meta property="og:image" content="https://sonorita.pastable.app/player.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <title>Sonorita — Download</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:          #2A2230;
-      --text:        #FBF7F1;
-      --accent:      #E0982E;
-      --accent-hover:#e8a840;
-      --font-serif:  'Fraunces', Georgia, serif;
-      --font-sans:   -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --bg:        #14121F;
+      --text:      #FBF7F1;
+      --dim:       rgba(251,247,241,0.52);
+      --accent:    #E0982E;
+      --lcd:       #23D818;
+      --gold:      #E8C547;
+      --chassis-1: #3A4165;
+      --chassis-2: #232842;
+      --edge-hi:   #9BA5C8;
+      --edge-lo:   #12142A;
+      --font-serif: 'Fraunces', Georgia, serif;
+      --font-mono:  ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+      --font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     }
 
     html, body { height: 100%; }
 
     body {
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
       font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
       display: flex;
-      align-items: center;
       justify-content: center;
-      min-height: 100dvh;
-      padding: 2.5rem 1.5rem;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+      align-items: center;   /* centre verticalement quand l'ecran est plus haut que le contenu */
+      padding: clamp(1.5rem, 5vw, 3.5rem) 1.25rem clamp(2.5rem, 6vw, 4rem);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Nappe chaude + trame de LED : le fond du visuel produit, tres attenue pour
+       rester lisible. Purement decoratif, ignore par les lecteurs d'ecran. */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -14vh 0 auto;
+      height: 105vh;
+      background:
+        radial-gradient(56% 46% at 10% 8%,  #E2352A, transparent 70%),
+        radial-gradient(50% 42% at 38% 0%,  #F2A21E, transparent 68%),
+        radial-gradient(44% 40% at 66% 10%, #F2D64B, transparent 66%),
+        radial-gradient(54% 50% at 96% 24%, #2B6BD6, transparent 70%);
+      opacity: 0.85;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -14vh 0 auto;
+      height: 105vh;
+      background-image: radial-gradient(circle, transparent 1.9px, var(--bg) 2px);
+      background-size: 8px 8px;
+      /* Le voile s'efface vers le bas : la nappe s'eteint au lieu d'etre coupee net. */
+      -webkit-mask-image: linear-gradient(transparent 0%, #000 78%);
+      mask-image: linear-gradient(transparent 0%, #000 78%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .stage {
+      position: relative;
+      z-index: 1;
+      isolation: isolate;
       width: 100%;
-      max-width: 500px;
+      max-width: 660px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2.6rem;
-      text-align: center;
+      gap: 2.25rem;
     }
 
+    /* ---------- Logo & accroche ---------- */
     .logo-svg {
-      width: 100%;
-      max-width: 420px;
-      overflow: visible;
+      width: min(300px, 74vw);
+      height: auto;
+      display: block;
+      /* Le logo passe sur la nappe : une ombre portee le decolle sans caisson. */
+      filter: drop-shadow(0 2px 10px rgba(0,0,0,0.9)) drop-shadow(0 0 26px rgba(0,0,0,0.7));
     }
-
-    @keyframes arc-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.6; transform: scale(1.08); }
-    }
-
-    .arc-group {
-      transform-origin: 100px 54px;
-      animation: arc-pulse 3.4s ease-in-out infinite;
-    }
+    .logo-svg .arc-group path { fill: none; stroke: var(--accent); stroke-width: 3.2; stroke-linecap: round; }
 
     .tagline {
       font-family: var(--font-serif);
-      font-size: clamp(1rem, 3.8vw, 1.3rem);
-      font-weight: 300;
       font-style: italic;
-      font-variation-settings: 'opsz' 20, 'SOFT' 80, 'WONK' 0;
-      color: var(--text);
-      opacity: 0.78;
-      letter-spacing: 0.015em;
-      line-height: 1.55;
+      font-size: clamp(1.05rem, 3.4vw, 1.4rem);
+      color: rgba(251,247,241,0.95);
+      text-align: center;
+      margin-top: -0.75rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.8);
     }
 
-    .notify-form {
+    /* ---------- Le player, en heros ---------- */
+    .player-shot {
       width: 100%;
-      display: flex;
-      flex-direction: row;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(251,247,241,0.10), 0 6px 32px rgba(0,0,0,0.40);
-      transition: box-shadow 0.25s ease;
+      max-width: 620px;
+      height: auto;
+      display: block;
+      image-rendering: pixelated;
+      border-radius: 3px;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.14),
+        0 26px 60px -18px rgba(0,0,0,0.92),
+        0 0 0 1px rgba(0,0,0,0.55),
+        0 0 90px -18px rgba(35,216,24,0.34);
     }
 
-    .notify-form:focus-within {
-      box-shadow: 0 0 0 1.5px var(--accent), 0 6px 32px rgba(0,0,0,0.40);
+    .player-caption {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-align: center;
+      margin-top: -1.4rem;
     }
+
+    /* ---------- Chassis commun (fenetre Winamp) ---------- */
+    .win {
+      width: 100%;
+      background: linear-gradient(180deg, var(--chassis-1), var(--chassis-2));
+      border: 1px solid var(--edge-lo);
+      border-top-color: var(--edge-hi);
+      border-left-color: rgba(155,165,200,0.55);
+      border-radius: 4px;
+      box-shadow: 0 12px 30px -14px rgba(0,0,0,0.9);
+      overflow: hidden;
+    }
+
+    .win-title {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(0,0,0,0.18));
+      border-bottom: 1px solid var(--edge-lo);
+    }
+
+    /* Les rainures de la barre de titre Winamp. */
+    .win-title::after {
+      content: '';
+      flex: 1;
+      height: 7px;
+      background: repeating-linear-gradient(180deg, rgba(155,165,200,0.5) 0 1px, transparent 1px 3px);
+      opacity: 0.55;
+    }
+
+    .win-body { padding: 0.55rem; background: #05060C; }
+
+    /* ---------- Playlist de telechargement ---------- */
+    .dl {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      padding: 0.6rem 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--lcd);
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .dl-num { color: rgba(35,216,24,0.55); min-width: 1.4em; }
+    .dl-name { flex: 1; }
+    .dl-meta { font-size: 0.76rem; color: rgba(35,216,24,0.55); white-space: nowrap; }
+
+    /* La selection Winamp : fond bleu franc, texte blanc. */
+    .dl:hover, .dl:focus-visible {
+      background: #2B3AAE;
+      color: #FFF;
+      outline: none;
+    }
+    .dl:hover .dl-num, .dl:hover .dl-meta,
+    .dl:focus-visible .dl-num, .dl:focus-visible .dl-meta { color: rgba(255,255,255,0.75); }
+
+    .dl.is-off { color: rgba(155,165,200,0.5); }
+    .dl.is-off .dl-num, .dl.is-off .dl-meta { color: rgba(155,165,200,0.38); }
+    .dl.is-off:hover, .dl.is-off:focus-visible { background: rgba(155,165,200,0.12); color: rgba(251,247,241,0.85); }
+
+    .dl-sep { height: 1px; margin: 0.35rem 0.5rem; background: rgba(155,165,200,0.16); }
+
+    /* ---------- Prerequis : UNE ligne, puis le detail sur demande ---------- */
+    .reqs {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--lcd);
+      padding: 0.7rem 0.75rem 0.2rem;
+      border-top: 1px solid rgba(155,165,200,0.16);
+      margin-top: 0.4rem;
+    }
+    .reqs strong { color: #FFF; font-weight: 700; }
+
+    details.note {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      border-top: 1px solid rgba(155,165,200,0.12);
+    }
+    details.note:first-of-type { border-top: 1px solid rgba(155,165,200,0.16); }
+
+    details.note > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.6rem 0.75rem;
+      color: rgba(155,165,200,0.85);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    details.note > summary::-webkit-details-marker { display: none; }
+    details.note > summary::before { content: '\25B8'; color: var(--accent); transition: transform 0.15s; }
+    details.note[open] > summary::before { transform: rotate(90deg); }
+    details.note > summary:hover { color: var(--text); }
+
+    details.note p {
+      padding: 0 0.75rem 0.8rem 1.75rem;
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      line-height: 1.65;
+      color: var(--dim);
+    }
+    details.note p + p { margin-top: 0.6rem; }
+    details.note em { color: rgba(251,247,241,0.85); font-style: normal; }
+
+    /* ---------- Formulaire ---------- */
+    .notify-wrap { width: 100%; }
+
+    .notify-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-align: center;
+      display: block;
+      margin-bottom: 0.65rem;
+    }
+
+    .notify-form { display: flex; gap: 0.5rem; width: 100%; }
 
     .notify-form input[type="email"] {
       flex: 1;
       min-width: 0;
-      background: rgba(251,247,241,0.06);
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 0.93rem;
-      padding: 0.9rem 1.1rem;
-      -webkit-appearance: none;
-      appearance: none;
+      background: #05060C;
+      border: 1px solid rgba(155,165,200,0.3);
+      border-radius: 3px;
+      padding: 0.8rem 0.9rem;
+      color: var(--lcd);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
     }
-
-    .notify-form input[type="email"]::placeholder { color: rgba(251,247,241,0.32); }
+    .notify-form input::placeholder { color: rgba(35,216,24,0.35); }
+    .notify-form input:focus { outline: none; border-color: var(--accent); }
 
     .notify-form button {
-      flex-shrink: 0;
-      background: var(--accent);
-      border: none;
-      color: #1a1120;
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
+      background: linear-gradient(180deg, #EFAE45, var(--accent));
+      border: 1px solid #8A5B14;
+      border-top-color: #F6CE86;
+      border-radius: 3px;
+      padding: 0.8rem 1.1rem;
+      color: #241A08;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 0.9rem 1.35rem;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
       white-space: nowrap;
     }
-
-    .notify-form button:hover   { background: var(--accent-hover); }
-    .notify-form button:active  { transform: scale(0.97); }
+    .notify-form button:hover { filter: brightness(1.08); }
+    .notify-form button:active { transform: translateY(1px); }
     .notify-form button:disabled { opacity: 0.6; cursor: default; }
 
     .form-msg {
-      font-size: 0.8rem;
-      color: rgba(251,247,241,0.45);
-      min-height: 1.1em;
-      letter-spacing: 0.01em;
-      transition: color 0.3s ease, opacity 0.3s ease;
-    }
-
-    .form-msg.ok    { color: #7ecba1; }
-    .form-msg.error { color: #e07a5f; }
-
-    @media (max-width: 380px) {
-      .notify-form { flex-direction: column; }
-      .notify-form button { text-align: center; padding: 0.85rem 1rem; }
-    }
-
-    /* Download section */
-    .download-section {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      align-items: stretch;
-    }
-
-    .download-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(251,247,241,0.35);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
       text-align: center;
-      margin-bottom: 0.2rem;
+      margin-top: 0.7rem;
+      min-height: 1.2em;
     }
-
-    .download-reqs {
-      font-size: 0.8rem;
-      line-height: 1.5;
-      color: rgba(251,247,241,0.5);
-      text-align: center;
-      margin-top: 0.85rem;
-    }
-    .download-reqs strong {
-      color: rgba(251,247,241,0.7);
-      font-weight: 600;
-    }
-
-    .dl-btn {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(251,247,241,0.06);
-      border: 1px solid rgba(251,247,241,0.12);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      padding: 0.85rem 1.2rem;
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-      gap: 1rem;
-    }
-
-    .dl-btn:hover {
-      background: rgba(224,152,46,0.12);
-      border-color: var(--accent);
-    }
-
-    .dl-btn .dl-os {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-
-    .dl-btn .dl-os svg {
-      flex-shrink: 0;
-      opacity: 0.85;
-    }
-
-    .dl-btn .dl-ext {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: rgba(251,247,241,0.45);
-      white-space: nowrap;
-    }
-
-    .dl-btn-disabled {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(251,247,241,0.02);
-      border: 1px dashed rgba(251,247,241,0.08);
-      border-radius: 10px;
-      color: rgba(251,247,241,0.3);
-      font-family: var(--font-sans);
-      font-size: 0.9rem;
-      font-weight: 600;
-      padding: 0.85rem 1.2rem;
-      cursor: default;
-      gap: 1rem;
-    }
-
-    /* Variante lien : le bloc macOS n'est pas téléchargeable mais mène au formulaire. */
-    a.dl-btn-disabled {
-      cursor: pointer;
-      text-decoration: none;
-      color: rgba(251,247,241,0.42);
-    }
-
-    a.dl-btn-disabled:hover,
-    a.dl-btn-disabled:focus-visible {
-      border-color: rgba(251,247,241,0.2);
-      color: rgba(251,247,241,0.62);
-    }
-
-    .dl-btn-disabled .dl-os {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-
-    .dl-btn-disabled .dl-ext {
-      font-size: 0.75rem;
-      font-weight: 400;
-      font-style: italic;
-    }
-
-    .notify-hint {
-      font-size: 0.75rem;
-      color: rgba(251,247,241,0.32);
-      text-align: center;
-      line-height: 1.5;
-    }
+    .form-msg.ok    { color: var(--lcd); }
+    .form-msg.error { color: #FF8B6B; }
 
     .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
+      position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden;
       clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
+
+    @media (max-width: 480px) {
+      .notify-form { flex-direction: column; }
+      .dl { font-size: 0.82rem; gap: 0.45rem; }
+      .dl-meta { font-size: 0.66rem; }
+      .dl-num { min-width: 1.2em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
   </style>
-  <script data-host="https://app.microanalytics.io" data-dnt="false" src="https://app.microanalytics.io/js/script.js" id="ZwSg9rf6GA" async defer></script>
 </head>
 
 <body>
   <main class="stage" role="main">
 
-    <!-- LOGO SVG -->
     <svg class="logo-svg" role="img" aria-label="Sonorita"
          viewBox="0 0 440 100" xmlns="http://www.w3.org/2000/svg" overflow="visible">
       <defs>
@@ -316,86 +367,87 @@
       <circle cx="229" cy="14" r="5.5" fill="#E0982E" />
     </svg>
 
-    <p class="tagline">Your music.&nbsp;&nbsp;On your machine.</p>
+    <p class="tagline">Infinite radio, generated on your machine.</p>
 
-    <!-- DOWNLOAD BUTTONS -->
-    <div class="download-section" aria-label="Download Sonorita">
-      <p class="download-label">Free desktop app — latest alpha build</p>
+    <img class="player-shot" src="player.png" width="731" height="291"
+         alt="The Sonorita player: a Winamp-style window showing a track playing, with a green LCD display and a spectrum analyser." />
+    <p class="player-caption">Pick a vibe, press play. It keeps generating.</p>
 
+    <!-- TELECHARGEMENTS — presentes comme une playlist -->
+    <section class="win" aria-label="Download Sonorita">
+      <h2 class="win-title">Download &mdash; latest alpha</h2>
+      <div class="win-body">
 
-      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_x64-setup.exe" download>
-        <span class="dl-os">
-          <!-- Windows icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.8"/>
-          </svg>
-          Windows
-        </span>
-        <span class="dl-ext">.exe installer</span>
-      </a>
+        <a class="dl" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_x64-setup.exe" download>
+          <span class="dl-num">1.</span>
+          <span class="dl-name">Windows</span>
+          <span class="dl-meta">.exe installer</span>
+        </a>
 
-      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_amd64.deb" download>
-        <span class="dl-os">
-          <!-- Linux icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm-.58 5.02a.88.88 0 0 1 1.16 0c.74.55.98 1.8.56 3.04a6.1 6.1 0 0 1-.44.94l-.28.46-.28-.46a6.1 6.1 0 0 1-.44-.94c-.42-1.24-.18-2.49.56-3.04h.16zM8.54 7.1c.4-.08.85.1 1.22.5.18.2.32.42.42.65l.2.48-.5.1a6.3 6.3 0 0 1-1.04.08c-1.32 0-2.28-.62-2.14-1.38.1-.55.76-.95 1.84-.43zm6.92 0c1.08-.52 1.74-.12 1.84.43.14.76-.82 1.38-2.14 1.38a6.3 6.3 0 0 1-1.04-.08l-.5-.1.2-.48c.1-.23.24-.45.42-.65.37-.4.82-.58 1.22-.5zM12 9.8c.42 0 .83.07 1.22.2.16.6.28 1.36.28 2.2 0 1.76-.66 3.38-1.5 3.38S10.5 13.96 10.5 12.2c0-.84.12-1.6.28-2.2A3.8 3.8 0 0 1 12 9.8zm-4.96 4.6c.16 0 .34.03.5.1l.52.2-.14.5a5.8 5.8 0 0 1-.72 1.62c-.74 1.1-1.7 1.62-2.14 1.16-.44-.46-.16-1.56.62-2.44.46-.5 1-.96 1.36-1.14zm9.92 0c.36.18.9.64 1.36 1.14.78.88 1.06 1.98.62 2.44-.44.46-1.4-.06-2.14-1.16a5.8 5.8 0 0 1-.72-1.62l-.14-.5.52-.2c.16-.07.34-.1.5-.1zM9.1 17.06c.5.8 1.12 1.44 1.78 1.84l-.28.94c-.1.34-.04.64.14.76.28.18.7-.06.96-.56l.28-.52.28.52c.26.5.68.74.96.56.18-.12.24-.42.14-.76l-.28-.94c.66-.4 1.28-1.04 1.78-1.84.06.34.12.7.16 1.04.2 1.52-.18 2.72-.82 2.72H10.8c-.64 0-1.02-1.2-.82-2.72.04-.34.1-.7.16-1.04h-.04z"/>
-          </svg>
-          Linux — Debian / Ubuntu
-        </span>
-        <span class="dl-ext">.deb package</span>
-      </a>
+        <a class="dl" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_amd64.deb" download>
+          <span class="dl-num">2.</span>
+          <span class="dl-name">Linux &mdash; Debian / Ubuntu</span>
+          <span class="dl-meta">.deb package</span>
+        </a>
 
-      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita-1.x86_64.rpm" download>
-        <span class="dl-os">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm-.58 5.02a.88.88 0 0 1 1.16 0c.74.55.98 1.8.56 3.04a6.1 6.1 0 0 1-.44.94l-.28.46-.28-.46a6.1 6.1 0 0 1-.44-.94c-.42-1.24-.18-2.49.56-3.04h.16zM8.54 7.1c.4-.08.85.1 1.22.5.18.2.32.42.42.65l.2.48-.5.1a6.3 6.3 0 0 1-1.04.08c-1.32 0-2.28-.62-2.14-1.38.1-.55.76-.95 1.84-.43zm6.92 0c1.08-.52 1.74-.12 1.84.43.14.76-.82 1.38-2.14 1.38a6.3 6.3 0 0 1-1.04-.08l-.5-.1.2-.48c.1-.23.24-.45.42-.65.37-.4.82-.58 1.22-.5zM12 9.8c.42 0 .83.07 1.22.2.16.6.28 1.36.28 2.2 0 1.76-.66 3.38-1.5 3.38S10.5 13.96 10.5 12.2c0-.84.12-1.6.28-2.2A3.8 3.8 0 0 1 12 9.8zm-4.96 4.6c.16 0 .34.03.5.1l.52.2-.14.5a5.8 5.8 0 0 1-.72 1.62c-.74 1.1-1.7 1.62-2.14 1.16-.44-.46-.16-1.56.62-2.44.46-.5 1-.96 1.36-1.14zm9.92 0c.36.18.9.64 1.36 1.14.78.88 1.06 1.98.62 2.44-.44.46-1.4-.06-2.14-1.16a5.8 5.8 0 0 1-.72-1.62l-.14-.5.52-.2c.16-.07.34-.1.5-.1zM9.1 17.06c.5.8 1.12 1.44 1.78 1.84l-.28.94c-.1.34-.04.64.14.76.28.18.7-.06.96-.56l.28-.52.28.52c.26.5.68.74.96.56.18-.12.24-.42.14-.76l-.28-.94c.66-.4 1.28-1.04 1.78-1.84.06.34.12.7.16 1.04.2 1.52-.18 2.72-.82 2.72H10.8c-.64 0-1.02-1.2-.82-2.72.04-.34.1-.7.16-1.04h-.04z"/>
-          </svg>
-          Linux — Fedora / RHEL
-        </span>
-        <span class="dl-ext">.rpm package</span>
-      </a>
+        <a class="dl" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita-1.x86_64.rpm" download>
+          <span class="dl-num">3.</span>
+          <span class="dl-name">Linux &mdash; Fedora / RHEL</span>
+          <span class="dl-meta">.rpm package</span>
+        </a>
 
-      <a class="dl-btn-disabled" href="#notifyForm" aria-label="macOS support in testing — get notified">
-        <span class="dl-os">
-          <!-- macOS icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.27c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.14 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.14 1.17-.35 2.35-1.01 3.19-.69.85-1.83 1.51-2.94 1.42-.15-1.15.41-2.35 1.01-3.11"/>
-          </svg>
-          macOS — Apple Silicon
-        </span>
-        <span class="dl-ext">in testing</span>
-      </a>
+        <div class="dl-sep"></div>
 
-      <div class="dl-btn-disabled" aria-label="AppImage coming soon">
-        <span class="dl-os">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm-.58 5.02a.88.88 0 0 1 1.16 0c.74.55.98 1.8.56 3.04a6.1 6.1 0 0 1-.44.94l-.28.46-.28-.46a6.1 6.1 0 0 1-.44-.94c-.42-1.24-.18-2.49.56-3.04h.16zM8.54 7.1c.4-.08.85.1 1.22.5.18.2.32.42.42.65l.2.48-.5.1a6.3 6.3 0 0 1-1.04.08c-1.32 0-2.28-.62-2.14-1.38.1-.55.76-.95 1.84-.43zm6.92 0c1.08-.52 1.74-.12 1.84.43.14.76-.82 1.38-2.14 1.38a6.3 6.3 0 0 1-1.04-.08l-.5-.1.2-.48c.1-.23.24-.45.42-.65.37-.4.82-.58 1.22-.5zM12 9.8c.42 0 .83.07 1.22.2.16.6.28 1.36.28 2.2 0 1.76-.66 3.38-1.5 3.38S10.5 13.96 10.5 12.2c0-.84.12-1.6.28-2.2A3.8 3.8 0 0 1 12 9.8zm-4.96 4.6c.16 0 .34.03.5.1l.52.2-.14.5a5.8 5.8 0 0 1-.72 1.62c-.74 1.1-1.7 1.62-2.14 1.16-.44-.46-.16-1.56.62-2.44.46-.5 1-.96 1.36-1.14zm9.92 0c.36.18.9.64 1.36 1.14.78.88 1.06 1.98.62 2.44-.44.46-1.4-.06-2.14-1.16a5.8 5.8 0 0 1-.72-1.62l-.14-.5.52-.2c.16-.07.34-.1.5-.1zM9.1 17.06c.5.8 1.12 1.44 1.78 1.84l-.28.94c-.1.34-.04.64.14.76.28.18.7-.06.96-.56l.28-.52.28.52c.26.5.68.74.96.56.18-.12.24-.42.14-.76l-.28-.94c.66-.4 1.28-1.04 1.78-1.84.06.34.12.7.16 1.04.2 1.52-.18 2.72-.82 2.72H10.8c-.64 0-1.02-1.2-.82-2.72.04-.34.1-.7.16-1.04h-.04z"/>
-          </svg>
-          Linux — AppImage
-        </span>
-        <span class="dl-ext">coming soon</span>
+        <a class="dl is-off" href="#notifyForm">
+          <span class="dl-num">4.</span>
+          <span class="dl-name">macOS &mdash; Apple Silicon</span>
+          <span class="dl-meta">in testing</span>
+        </a>
+
+        <div class="dl is-off" aria-disabled="true">
+          <span class="dl-num">5.</span>
+          <span class="dl-name">Linux &mdash; AppImage</span>
+          <span class="dl-meta">coming soon</span>
+        </div>
+
+        <p class="reqs"><strong>Needs an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Windows and Linux.</p>
+
+        <details class="note">
+          <summary>No NVIDIA card?</summary>
+          <p>On an AMD or Intel GPU, Sonorita won&rsquo;t start at all &mdash; it shows a &ldquo;hardware support coming soon&rdquo; screen and stops there. Sonorita generates music on your GPU, and today it only knows how to use NVIDIA cards.</p>
+          <p>If that&rsquo;s your machine, leave your email below. Knowing how many of you there are is what decides whether we build it.</p>
+        </details>
+
+        <details class="note">
+          <summary>On a Mac?</summary>
+          <p>It doesn&rsquo;t work yet. Sonorita currently refuses to start on every Mac &mdash; it looks for an NVIDIA card, finds none, and stops.</p>
+          <p>The fix is written and about to go out to a Mac tester, but it isn&rsquo;t in the downloadable build yet, and realistically won&rsquo;t be for a few weeks. Leave your email and we&rsquo;ll tell you the day it works. Intel Macs aren&rsquo;t supported.</p>
+        </details>
+
+        <details class="note">
+          <summary>What happens on first run</summary>
+          <p>Sonorita downloads about 3.3&nbsp;GB of AI models &mdash; roughly <em>10 to 15 minutes</em> on a typical connection, and about 5&nbsp;GB of free disk space. Very little happens on screen during that time. After that it works fully offline.</p>
+          <p>You&rsquo;ll also see a security warning: the app isn&rsquo;t code-signed yet, so Windows shows &ldquo;Windows protected your PC&rdquo; &mdash; click <em>More info</em>, then <em>Run anyway</em>. It&rsquo;s an alpha built by one developer, not malware.</p>
+        </details>
+
       </div>
+    </section>
 
-      <p class="download-reqs"><strong>Requires an NVIDIA GPU</strong> with about 4&nbsp;GB or more of video memory — Sonorita generates music on your GPU, and today it only knows how to use NVIDIA cards. On an AMD or Intel GPU it won&rsquo;t start at all: it shows a &ldquo;hardware support coming soon&rdquo; screen and stops there. If that&rsquo;s your machine, leave your email below — we&rsquo;ll tell you if that changes, and knowing how many of you there are is what decides whether we build it. Runs on Windows and Linux (Debian/Ubuntu &amp; Fedora/RHEL).</p>
-      <p class="download-reqs"><strong>macOS (Apple&nbsp;Silicon) doesn&rsquo;t work yet.</strong> Sonorita currently refuses to start on every Mac — it looks for an NVIDIA card, finds none, and stops. The fix is written and about to go out to a Mac tester, but it isn&rsquo;t in the downloadable build yet, and realistically won&rsquo;t be for a few weeks. Leave your email below and we&rsquo;ll tell you the day it works. Intel Macs aren&rsquo;t supported.</p>
-      <p class="download-reqs"><strong>On first run</strong>, Sonorita downloads about 3.3&nbsp;GB of AI models — roughly 10&ndash;15&nbsp;minutes on a typical connection, and about 5&nbsp;GB of free disk space. After that it works fully offline.</p>
-      <p class="download-reqs"><strong>You'll see a security warning.</strong> The app isn't code-signed yet, so Windows shows &ldquo;Windows protected your PC&rdquo; — click <em>More info</em>, then <em>Run anyway</em>. It's an alpha built by one developer, not malware.</p>
+    <div class="notify-wrap">
+      <span class="notify-label">Not your platform yet? Get told when it is.</span>
+      <form class="notify-form" id="notifyForm" action="#" method="POST" novalidate
+            aria-label="Get notified of new releases">
+        <label for="emailInput" class="sr-only">Email address</label>
+        <input id="emailInput" type="email" name="email" placeholder="your@email"
+               autocomplete="email" inputmode="email" spellcheck="false" required />
+        <button type="submit" id="notifyBtn">Keep me updated</button>
+      </form>
+      <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
     </div>
-
-    <!-- FORMULAIRE — brancher Listmonk/Mailchimp dans le JS ci-dessous -->
-    <form class="notify-form" id="notifyForm" action="#" method="POST" novalidate
-          aria-label="Get notified of new releases">
-      <label for="emailInput" class="sr-only">Email address</label>
-      <input id="emailInput" type="email" name="email" placeholder="Your email"
-             autocomplete="email" inputmode="email" spellcheck="false" required />
-      <button type="submit" id="notifyBtn">Keep me updated</button>
-    </form>
-
-    <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
 
   </main>
 
-  <script>
+<script>
     (function () {
       'use strict';
       const form  = document.getElementById('notifyForm');
