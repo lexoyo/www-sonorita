@@ -118,30 +118,7 @@
       text-shadow: 0 2px 12px rgba(0,0,0,0.95), 0 0 30px rgba(0,0,0,0.8);
     }
 
-    /* ---------- Le player, en heros ---------- */
-    .player-shot {
-      width: 100%;
-      max-width: 620px;
-      height: auto;
-      display: block;
-      image-rendering: pixelated;
-      border-radius: 3px;
-      box-shadow:
-        0 1px 0 rgba(255,255,255,0.14),
-        0 26px 60px -18px rgba(0,0,0,0.92),
-        0 0 0 1px rgba(0,0,0,0.55),
-        0 0 90px -18px rgba(35,216,24,0.34);
-    }
 
-    .player-caption {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-align: center;
-      margin-top: -1.4rem;
-    }
 
     /* ---------- Chassis commun (fenetre Winamp) ---------- */
     .win {
@@ -376,10 +353,6 @@
 
     <p class="tagline">Infinite radio, generated on your machine.</p>
 
-    <img class="player-shot" src="player.png" width="731" height="291"
-         alt="The Sonorita player: a Winamp-style window showing a track playing, with a green LCD display and a spectrum analyser." />
-    <p class="player-caption">Pick a vibe, press play. It keeps generating.</p>
-
     <!-- TELECHARGEMENTS — presentes comme une playlist -->
     <section class="win" aria-label="Download Sonorita">
       <h2 class="win-title">Download &mdash; latest alpha</h2>
@@ -411,12 +384,6 @@
           <span class="dl-meta">test build</span>
         </a>
 
-        <div class="dl is-off" aria-disabled="true">
-          <span class="dl-num">5.</span>
-          <span class="dl-name">Linux &mdash; AppImage</span>
-          <span class="dl-meta">coming soon</span>
-        </div>
-
         <p class="reqs"><strong>Windows and Linux need an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Mac: Apple&nbsp;Silicon, test build.</p>
 
         <details class="note">
@@ -429,6 +396,12 @@
           <summary>On a Mac?</summary>
           <p>Until now Sonorita refused to start on every Mac &mdash; it looked for an NVIDIA card, found none, and stopped. That&rsquo;s fixed, and the fix is in the <em>test build</em> above. It won&rsquo;t be in the regular release for a few weeks.</p>
           <p>Being straight with you: <em>nobody has run that build yet</em> &mdash; not once, on any Mac. It&rsquo;s unsigned, so macOS will ask you to confirm in <em>System Settings &rsaquo; Privacy &amp; Security</em>. If you try it, we&rsquo;d love to know what happens, and the download page tells you what to look for. Apple Silicon only &mdash; Intel Macs aren&rsquo;t supported.</p>
+        </details>
+
+        <details class="note">
+          <summary>Another Linux distro?</summary>
+          <p>We only ship <em>.deb</em> and <em>.rpm</em>. There&rsquo;s no AppImage: the one we can build has no sound at all &mdash; the bundled WebKit ships without the GStreamer pieces it needs, and fixing that properly isn&rsquo;t something we&rsquo;ve got to yet.</p>
+          <p>If you&rsquo;re on Arch, openSUSE, NixOS or anything else, leave your email and tell us which &mdash; that&rsquo;s what would move it up the list.</p>
         </details>
 
         <details class="note">
