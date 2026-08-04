@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sonorita — desktop app for AI music generation, local-first. No cloud, no subscription." />
   <meta property="og:title" content="Sonorita — AI music, local-first" />
-  <meta property="og:description" content="Your music. On your machine. A free desktop app for Windows, Linux and macOS." />
+  <meta property="og:description" content="Your music. On your machine. A free desktop app for Windows and Linux PCs with an NVIDIA GPU." />
   <title>Sonorita — Download</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -241,6 +241,19 @@
       gap: 1rem;
     }
 
+    /* Variante lien : le bloc macOS n'est pas téléchargeable mais mène au formulaire. */
+    a.dl-btn-disabled {
+      cursor: pointer;
+      text-decoration: none;
+      color: rgba(251,247,241,0.42);
+    }
+
+    a.dl-btn-disabled:hover,
+    a.dl-btn-disabled:focus-visible {
+      border-color: rgba(251,247,241,0.2);
+      color: rgba(251,247,241,0.62);
+    }
+
     .dl-btn-disabled .dl-os {
       display: flex;
       align-items: center;
@@ -309,16 +322,6 @@
     <div class="download-section" aria-label="Download Sonorita">
       <p class="download-label">Free desktop app — latest alpha build</p>
 
-      <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_aarch64.dmg" download>
-        <span class="dl-os">
-          <!-- macOS icon -->
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.27c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.14 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.14 1.17-.35 2.35-1.01 3.19-.69.85-1.83 1.51-2.94 1.42-.15-1.15.41-2.35 1.01-3.11"/>
-          </svg>
-          macOS — Apple Silicon
-        </span>
-        <span class="dl-ext">.dmg (experimental)</span>
-      </a>
 
       <a class="dl-btn" href="https://github.com/lexoyo/sonorita-releases/releases/latest/download/Sonorita_x64-setup.exe" download>
         <span class="dl-os">
@@ -352,6 +355,17 @@
         <span class="dl-ext">.rpm package</span>
       </a>
 
+      <a class="dl-btn-disabled" href="#notifyForm" aria-label="macOS support in testing — get notified">
+        <span class="dl-os">
+          <!-- macOS icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.27c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.14 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.14 1.17-.35 2.35-1.01 3.19-.69.85-1.83 1.51-2.94 1.42-.15-1.15.41-2.35 1.01-3.11"/>
+          </svg>
+          macOS — Apple Silicon
+        </span>
+        <span class="dl-ext">in testing</span>
+      </a>
+
       <div class="dl-btn-disabled" aria-label="AppImage coming soon">
         <span class="dl-os">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -362,9 +376,10 @@
         <span class="dl-ext">coming soon</span>
       </div>
 
-      <p class="download-reqs"><strong>Requires a dedicated GPU</strong> with about 4&nbsp;GB or more of video memory — Sonorita generates music on your GPU. Works on Windows, Linux (Debian/Ubuntu &amp; Fedora/RHEL) and macOS (Apple&nbsp;Silicon, experimental).</p>
+      <p class="download-reqs"><strong>Requires an NVIDIA GPU</strong> with about 4&nbsp;GB or more of video memory — Sonorita generates music on your GPU, and today it only knows how to use NVIDIA cards. On an AMD or Intel GPU it won&rsquo;t start at all: it shows a &ldquo;hardware support coming soon&rdquo; screen and stops there. If that&rsquo;s your machine, leave your email below — we&rsquo;ll tell you if that changes, and knowing how many of you there are is what decides whether we build it. Runs on Windows and Linux (Debian/Ubuntu &amp; Fedora/RHEL).</p>
+      <p class="download-reqs"><strong>macOS (Apple&nbsp;Silicon) doesn&rsquo;t work yet.</strong> Sonorita currently refuses to start on every Mac — it looks for an NVIDIA card, finds none, and stops. The fix is written and about to go out to a Mac tester, but it isn&rsquo;t in the downloadable build yet, and realistically won&rsquo;t be for a few weeks. Leave your email below and we&rsquo;ll tell you the day it works. Intel Macs aren&rsquo;t supported.</p>
       <p class="download-reqs"><strong>On first run</strong>, Sonorita downloads about 3.3&nbsp;GB of AI models — roughly 10&ndash;15&nbsp;minutes on a typical connection, and about 5&nbsp;GB of free disk space. After that it works fully offline.</p>
-      <p class="download-reqs"><strong>You'll see a security warning.</strong> The app isn't code-signed yet, so Windows shows &ldquo;Windows protected your PC&rdquo; — click <em>More info</em>, then <em>Run anyway</em>. On macOS, open <em>System Settings</em> &rsaquo; <em>Privacy &amp; Security</em>, scroll down and click <em>Open Anyway</em> &mdash; since macOS Sequoia, right-clicking the app no longer works. It's an alpha built by one developer, not malware.</p>
+      <p class="download-reqs"><strong>You'll see a security warning.</strong> The app isn't code-signed yet, so Windows shows &ldquo;Windows protected your PC&rdquo; — click <em>More info</em>, then <em>Run anyway</em>. It's an alpha built by one developer, not malware.</p>
     </div>
 
     <!-- FORMULAIRE — brancher Listmonk/Mailchimp dans le JS ci-dessous -->
