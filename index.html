@@ -12,7 +12,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sonorita — an infinite AI radio that generates music on your own machine. No cloud, no account, no subscription." />
   <meta property="og:title" content="Sonorita — infinite radio, generated on your machine" />
-  <meta property="og:description" content="Your music. On your machine. A free desktop app for Windows and Linux PCs with an NVIDIA GPU." />
+  <meta property="og:description" content="Your music. On your machine. A free desktop app for Windows, Linux and Apple Silicon Macs." />
   <meta property="og:image" content="https://sonorita.pastable.app/player.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <title>Sonorita — Download</title>
@@ -208,6 +208,13 @@
     .dl:hover .dl-num, .dl:hover .dl-meta,
     .dl:focus-visible .dl-num, .dl:focus-visible .dl-meta { color: rgba(255,255,255,0.75); }
 
+    /* Build de test : disponible, mais pas au meme niveau de confiance que les autres. */
+    .dl.is-test { color: var(--accent); }
+    .dl.is-test .dl-num, .dl.is-test .dl-meta { color: rgba(224,152,46,0.6); }
+    .dl.is-test:hover, .dl.is-test:focus-visible { background: #2B3AAE; color: #FFF; }
+    .dl.is-test:hover .dl-num, .dl.is-test:hover .dl-meta,
+    .dl.is-test:focus-visible .dl-num, .dl.is-test:focus-visible .dl-meta { color: rgba(255,255,255,0.75); }
+
     .dl.is-off { color: rgba(155,165,200,0.5); }
     .dl.is-off .dl-num, .dl.is-off .dl-meta { color: rgba(155,165,200,0.38); }
     .dl.is-off:hover, .dl.is-off:focus-visible { background: rgba(155,165,200,0.12); color: rgba(251,247,241,0.85); }
@@ -398,10 +405,10 @@
 
         <div class="dl-sep"></div>
 
-        <a class="dl is-off" href="#notifyForm">
+        <a class="dl is-test" href="https://github.com/lexoyo/sonorita-releases/releases/tag/macos-test-20260803">
           <span class="dl-num">4.</span>
           <span class="dl-name">macOS &mdash; Apple Silicon</span>
-          <span class="dl-meta">in testing</span>
+          <span class="dl-meta">test build</span>
         </a>
 
         <div class="dl is-off" aria-disabled="true">
@@ -410,7 +417,7 @@
           <span class="dl-meta">coming soon</span>
         </div>
 
-        <p class="reqs"><strong>Needs an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Windows and Linux.</p>
+        <p class="reqs"><strong>Windows and Linux need an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Mac: Apple&nbsp;Silicon, test build.</p>
 
         <details class="note">
           <summary>No NVIDIA card?</summary>
@@ -420,8 +427,8 @@
 
         <details class="note">
           <summary>On a Mac?</summary>
-          <p>It doesn&rsquo;t work yet. Sonorita currently refuses to start on every Mac &mdash; it looks for an NVIDIA card, finds none, and stops.</p>
-          <p>The fix is written and about to go out to a Mac tester, but it isn&rsquo;t in the downloadable build yet, and realistically won&rsquo;t be for a few weeks. Leave your email and we&rsquo;ll tell you the day it works. Intel Macs aren&rsquo;t supported.</p>
+          <p>Until now Sonorita refused to start on every Mac &mdash; it looked for an NVIDIA card, found none, and stopped. That&rsquo;s fixed, and the fix is in the <em>test build</em> above. It won&rsquo;t be in the regular release for a few weeks.</p>
+          <p>Being straight with you: <em>nobody has run that build yet</em> &mdash; not once, on any Mac. It&rsquo;s unsigned, so macOS will ask you to confirm in <em>System Settings &rsaquo; Privacy &amp; Security</em>. If you try it, we&rsquo;d love to know what happens, and the download page tells you what to look for. Apple Silicon only &mdash; Intel Macs aren&rsquo;t supported.</p>
         </details>
 
         <details class="note">
