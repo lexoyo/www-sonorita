@@ -305,10 +305,18 @@
       clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
 
+    /* Sous ~560px, la colonne de droite ecrase le nom de la plateforme :
+       on passe la mention en dessous, alignee sous le nom. */
+    @media (max-width: 560px) {
+      .dl { flex-wrap: wrap; row-gap: 0.15rem; }
+      .dl-name { flex: 1 1 auto; }
+      .dl-meta { flex: 1 0 100%; margin-left: 2em; white-space: normal; }
+    }
+
     @media (max-width: 480px) {
       .notify-form { flex-direction: column; }
       .dl { font-size: 0.82rem; gap: 0.45rem; }
-      .dl-meta { font-size: 0.66rem; }
+      .dl-meta { font-size: 0.66rem; margin-left: 1.65em; }
       .dl-num { min-width: 1.2em; }
     }
 
@@ -378,35 +386,36 @@
 
         <div class="dl-sep"></div>
 
-        <a class="dl is-test" href="https://github.com/lexoyo/sonorita-releases/releases/tag/macos-test-20260803">
+        <a class="dl is-test" href="https://github.com/lexoyo/sonorita-releases/releases/download/macos-test-20260803/Sonorita_macos-metal-test.dmg" download>
           <span class="dl-num">4.</span>
           <span class="dl-name">macOS &mdash; Apple Silicon</span>
-          <span class="dl-meta">test build</span>
+          <span class="dl-meta">.dmg &mdash; nobody has run it yet</span>
         </a>
 
-        <p class="reqs"><strong>Windows and Linux need an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Mac: Apple&nbsp;Silicon, test build.</p>
+        <p class="reqs"><strong>Windows and Linux need an NVIDIA GPU</strong> with about 4&nbsp;GB of video memory. Mac: Apple&nbsp;Silicon with 8&nbsp;GB of unified memory &mdash; test build, never run by anyone.</p>
 
         <details class="note">
           <summary>No NVIDIA card?</summary>
           <p>On an AMD or Intel GPU, Sonorita won&rsquo;t start at all &mdash; it shows a &ldquo;hardware support coming soon&rdquo; screen and stops there. Sonorita generates music on your GPU, and today it only knows how to use NVIDIA cards.</p>
-          <p>If that&rsquo;s your machine, leave your email below. Knowing how many of you there are is what decides whether we build it.</p>
+          <p>If that&rsquo;s your machine, leave your email below. Knowing how many of you there are is what decides whether I build it.</p>
         </details>
 
         <details class="note">
           <summary>On a Mac?</summary>
           <p>Until now Sonorita refused to start on every Mac &mdash; it looked for an NVIDIA card, found none, and stopped. That&rsquo;s fixed, and the fix is in the <em>test build</em> above. It won&rsquo;t be in the regular release for a few weeks.</p>
-          <p>Being straight with you: <em>nobody has run that build yet</em> &mdash; not once, on any Mac. It&rsquo;s unsigned, so macOS will ask you to confirm in <em>System Settings &rsaquo; Privacy &amp; Security</em>. If you try it, we&rsquo;d love to know what happens, and the download page tells you what to look for. Apple Silicon only &mdash; Intel Macs aren&rsquo;t supported.</p>
+          <p>Being straight with you: <em>nobody has run that build yet</em> &mdash; not once, on any Mac. Apple Silicon only, 8&nbsp;GB of unified memory or more; Intel Macs aren&rsquo;t supported. It&rsquo;s unsigned, so macOS blocks it until you open <em>System Settings &rsaquo; Privacy &amp; Security</em> and click <em>Open anyway</em>. The About menu will say 0.1.0-alpha.17 &mdash; that&rsquo;s expected, the fix is in there. If you run it, leave your email below &mdash; I want to know where it stopped. Right now nobody knows whether it works, me included.</p>
         </details>
 
         <details class="note">
           <summary>Another Linux distro?</summary>
-          <p>We only ship <em>.deb</em> and <em>.rpm</em>. There&rsquo;s no AppImage: the one we can build has no sound at all &mdash; the bundled WebKit ships without the GStreamer pieces it needs, and fixing that properly isn&rsquo;t something we&rsquo;ve got to yet.</p>
-          <p>If you&rsquo;re on Arch, openSUSE, NixOS or anything else, leave your email and tell us which &mdash; that&rsquo;s what would move it up the list.</p>
+          <p>I only ship <em>.deb</em> and <em>.rpm</em>. There&rsquo;s no AppImage: the one I can build has no sound at all &mdash; the bundled WebKit ships without the GStreamer pieces it needs, and I haven&rsquo;t got to fixing that properly yet.</p>
+          <p>If you&rsquo;re on Arch, openSUSE, NixOS or anything else, leave your email and tell me which &mdash; that&rsquo;s what would move it up the list.</p>
         </details>
 
         <details class="note">
           <summary>What happens on first run</summary>
           <p>Sonorita downloads about 3.3&nbsp;GB of AI models &mdash; roughly <em>10 to 15 minutes</em> on a typical connection, and about 5&nbsp;GB of free disk space. Very little happens on screen during that time. After that it works fully offline.</p>
+          <p>Those models land on your <em>system drive</em> &mdash; <em>%APPDATA%</em> on Windows, <em>~/Library/Application&nbsp;Support</em> on macOS, <em>~/.local/share</em> on Linux &mdash; not on the drive you installed the app to. That system drive is the one that needs the 5&nbsp;GB, and it&rsquo;s the one Sonorita means when it says there isn&rsquo;t enough space. If it&rsquo;s tight and you&rsquo;re comfortable with environment variables, set <em>SONORITA_MODELS_DIR</em> to another folder before you launch the app and the models go there instead.</p>
           <p>You&rsquo;ll also see a security warning: the app isn&rsquo;t code-signed yet, so Windows shows &ldquo;Windows protected your PC&rdquo; &mdash; click <em>More info</em>, then <em>Run anyway</em>. It&rsquo;s an alpha built by one developer, not malware.</p>
         </details>
 
@@ -451,7 +460,7 @@
           body: JSON.stringify({ data: { Email: email } })
         }).then(function(r) { r.ok ? onSuccess() : onError(); }).catch(onError);
 
-        function onSuccess() { setLoading(false); input.value = ''; showMsg("You're on the list. We'll reach out soon.", 'ok'); }
+        function onSuccess() { setLoading(false); input.value = ''; showMsg("You're on the list. I'll get back to you soon.", 'ok'); }
         function onError()   { setLoading(false); showMsg('Something went wrong — please try again.', 'error'); }
       });
 
